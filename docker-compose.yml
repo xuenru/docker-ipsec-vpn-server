@@ -2,8 +2,10 @@ version: '3'
 
 services:
   vpn:
-    image: hwdsl2/ipsec-vpn-server
+    image: ipsec-vpn-server
     restart: always
+    volumes:
+      - ./ikev2-vpn-data:/etc/ipsec.d
     env_file:
       - ./vpn.env
     ports:
