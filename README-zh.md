@@ -1,10 +1,10 @@
 # Docker 上的 IPsec VPN 服务器
 
-[![Build Status](https://img.shields.io/github/workflow/status/hwdsl2/docker-ipsec-vpn-server/buildx%20latest.svg?cacheSeconds=3600)](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/docker-ipsec-vpn-server.svg?cacheSeconds=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/)
+[![Build Status](https://img.shields.io/github/workflow/status/hwdsl2/docker-ipsec-vpn-server/buildx%20alpine%20latest.svg?cacheSeconds=3600)](https://github.com/hwdsl2/docker-ipsec-vpn-server/actions) [![GitHub Stars](https://img.shields.io/github/stars/hwdsl2/docker-ipsec-vpn-server.svg?cacheSeconds=86400)](https://github.com/hwdsl2/docker-ipsec-vpn-server/stargazers) [![Docker Stars](https://img.shields.io/docker/stars/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/) [![Docker Pulls](https://img.shields.io/docker/pulls/hwdsl2/ipsec-vpn-server.svg?cacheSeconds=86400)](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/)
 
 使用这个 Docker 镜像快速搭建 IPsec VPN 服务器。支持 IPsec/L2TP，Cisco IPsec 和 IKEv2 协议。
 
-本镜像以 Debian 10 (Buster) 为基础，并使用 [Libreswan](https://libreswan.org) (IPsec VPN 软件) 和 [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP 服务进程)。
+本镜像以 Alpine 3.14 或 Debian 10 为基础，并使用 [Libreswan](https://libreswan.org) (IPsec VPN 软件) 和 [xl2tpd](https://github.com/xelerance/xl2tpd) (L2TP 服务进程)。
 
 [**&raquo; 另见： IPsec VPN 服务器一键安装脚本**](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md)
 
@@ -15,6 +15,7 @@
 - [快速开始](#快速开始)
 - [安装 Docker](#安装-docker)
 - [下载](#下载)
+- [镜像对照表](#镜像对照表)
 - [如何使用本镜像](#如何使用本镜像)
 - [下一步](#下一步)
 - [重要提示](#重要提示)
@@ -42,13 +43,13 @@ docker run \
 
 你的 VPN 登录凭证将会被自动随机生成。请参见 [获取 VPN 登录信息](#获取-vpn-登录信息)。
 
-如需了解更多有关如何使用本镜像的信息，请继续阅读以下部分。
+要了解更多有关如何使用本镜像的信息，请继续阅读以下部分。
 
 ## 安装 Docker
 
-首先，在你的 Linux 服务器上 [安装并运行 Docker](https://docs.docker.com/engine/install/)。高级用户也可以使用 [Podman](https://podman.io) 来替代 Docker 运行本镜像，需要首先为 `docker` 命令 [创建一个别名](https://podman.io/whatis.html)。
+首先在你的 Linux 服务器上 [安装 Docker](https://docs.docker.com/engine/install/)。另外你也可以使用 [Podman](https://podman.io) 运行本镜像，需要首先为 `docker` 命令 [创建一个别名](https://podman.io/whatis.html)。
 
-**注：** 本镜像不支持 Docker for Mac 或者 Windows。
+高级用户可以在 macOS 上通过安装 [Docker for Mac](https://docs.docker.com/docker-for-mac/) 使用本镜像。在使用 IPsec/L2TP 模式之前，你可能需要运行 `docker restart ipsec-vpn-server` 重启一次 Docker 容器。本镜像不支持 Docker for Windows。
 
 ## 下载
 
@@ -58,7 +59,7 @@ docker run \
 docker pull hwdsl2/ipsec-vpn-server
 ```
 
-或者，你也可以从 [Quay.io](https://quay.io/repository/hwdsl2/ipsec-vpn-server) 下载这个镜像：
+或者，你也可以从 [Quay.io](https://quay.io/repository/hwdsl2/ipsec-vpn-server) 下载：
 
 ```
 docker pull quay.io/hwdsl2/ipsec-vpn-server
@@ -69,13 +70,30 @@ docker image tag quay.io/hwdsl2/ipsec-vpn-server hwdsl2/ipsec-vpn-server
 
 高级用户可以自己从 GitHub [编译源代码](#从源代码构建)。
 
+## 镜像对照表
+
+有两个预构建的镜像可用。默认的基于 Alpine 的镜像大小仅 ~16MB。
+
+|                 | 基于 Alpine               | 基于 Debian                     |
+| --------------- | ------------------------ | ------------------------------ |
+| 镜像名称          | hwdsl2/ipsec-vpn-server  | hwdsl2/ipsec-vpn-server:debian |
+| 压缩后大小        | ~ 16 MB                  | ~ 57 MB                        |
+| 基础镜像          | Alpine Linux 3.14        | Debian Linux 10                |
+| 系统架构          | amd64, arm64, arm/v7     | amd64, arm64, arm/v7           |
+| Libreswan 版本   | 4.5                      | 4.5                            |
+| IPsec/L2TP      | ✅                       | ✅                              |
+| Cisco IPsec     | ✅                       | ✅                              |
+| IKEv2           | ✅                       | ✅                              |
+
+**注：** 要使用基于 Debian 的镜像，请将本自述文件中所有的 `hwdsl2/ipsec-vpn-server` 替换为 `hwdsl2/ipsec-vpn-server:debian`。
+
 ## 如何使用本镜像
 
 ### 环境变量
 
-**注：** 所有这些环境变量对于本镜像都是可选的，也就是说无需定义它们就可以搭建 IPsec VPN 服务器。你可以运行 `touch vpn.env` 创建一个空的 `env` 文件，然后跳到下一节。
+**注：** 所有这些变量对于本镜像都是可选的，也就是说无需定义它们就可以搭建 IPsec VPN 服务器。你可以运行 `touch vpn.env` 创建一个空的 `env` 文件，然后跳到下一节。
 
-这个 Docker 镜像使用以下几个变量，可以在一个 `env` 文件中定义 （[示例](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/vpn.env.example)）：
+这个 Docker 镜像使用以下几个变量，可以在一个 `env` 文件中定义（参见[示例](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/vpn.env.example)）：
 
 ```
 VPN_IPSEC_PSK=your_ipsec_pre_shared_key
@@ -94,17 +112,19 @@ VPN_ADDL_PASSWORDS=additional_password_1 additional_password_2
 
 **注：** 在你的 `env` 文件中，**不要**为变量值添加 `""` 或者 `''`，或在 `=` 两边添加空格。**不要**在值中使用这些字符： `\ " '`。一个安全的 IPsec PSK 应该至少包含 20 个随机字符。
 
-高级用户可以指定一个域名作为 VPN 服务器的地址。这是可选的。该域名必须是一个全称域名(FQDN)。示例如下：
+高级用户可以指定一个域名作为 VPN 服务器的地址。这是可选的。该域名必须是一个全称域名 (FQDN)。它将包含在 IKEv2 模式的服务器证书中，这是 VPN 客户端连接所必需的。示例如下：
 
 ```
 VPN_DNS_NAME=vpn.example.com
 ```
 
-你可以指定第一个 IKEv2 客户端的名称。这是可选的。该名称不能包含空格或者除 `-` `_` 之外的任何特殊字符。如果未指定，则使用默认值 `vpnclient`。请注意，如果在 Docker 容器中已经配置了 IKEv2，则此变量无效。
+你可以指定第一个 IKEv2 客户端的名称。这是可选的。该名称不能包含空格或者除 `-` `_` 之外的任何特殊字符。如果未指定，则使用默认值 `vpnclient`。
 
 ```
 VPN_CLIENT_NAME=your_client_name
 ```
+
+请注意，如果在 Docker 容器中已经配置了 IKEv2，则 `VPN_DNS_NAME` 和 `VPN_CLIENT_NAME` 变量无效。
 
 ### 运行 IPsec VPN 服务器
 
@@ -159,11 +179,11 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpn-gen.env ./
 
 配置你的计算机或其它设备使用 VPN 。请参见：
 
+**[配置并使用 IKEv2 VPN](#配置并使用-ikev2-vpn)**
+
 **[配置 IPsec/L2TP VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md)**
 
 **[配置 IPsec/XAuth ("Cisco IPsec") VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)**
-
-**[配置并使用 IKEv2 VPN](#配置并使用-ikev2-vpn)**
 
 如果在连接过程中遇到错误，请参见 [故障排除](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#故障排除)。
 
@@ -177,7 +197,7 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpn-gen.env ./
 
 **Android 用户** 如果遇到连接问题，请尝试 [这些步骤](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md#android-mtumss-问题)。
 
-同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要同时连接在同一个 NAT（比如家用路由器）后面的多个设备到 VPN 服务器，你必须仅使用 [IPsec/XAuth 模式](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md)，或者 [配置 IKEv2](#配置并使用-ikev2-vpn)。
+同一个 VPN 账户可以在你的多个设备上使用。但是由于 IPsec/L2TP 的局限性，如果需要同时连接在同一个 NAT（比如家用路由器）后面的多个设备到 VPN 服务器，你必须仅使用 [IKEv2](#配置并使用-ikev2-vpn) 或者 [IPsec/XAuth](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-xauth-zh.md) 模式。
 
 如需添加，修改或者删除 VPN 用户账户，首先更新你的 `env` 文件，然后你必须按照 [下一节](#更新-docker-镜像) 的说明来删除并重新创建 Docker 容器。高级用户可以 [绑定挂载](#绑定挂载-env-文件) `env` 文件。
 
@@ -187,7 +207,7 @@ docker cp ipsec-vpn-server:/etc/ipsec.d/vpn-gen.env ./
 
 ## 更新 Docker 镜像
 
-如需更新你的 Docker 镜像和容器，首先 [下载](#下载) 最新版本：
+要更新 Docker 镜像和容器，首先 [下载](#下载) 最新版本：
 
 ```
 docker pull hwdsl2/ipsec-vpn-server
@@ -199,7 +219,7 @@ docker pull hwdsl2/ipsec-vpn-server
 Status: Image is up to date for hwdsl2/ipsec-vpn-server:latest
 ```
 
-否则，将会下载最新版本。要更新你的 Docker 容器，首先在纸上记下你所有的 [VPN 登录信息](#获取-vpn-登录信息)。然后删除 Docker 容器： `docker rm -f ipsec-vpn-server`。最后按照 [如何使用本镜像](#如何使用本镜像) 的说明来重新创建它。
+否则将会下载最新版本。要更新你的 Docker 容器，首先在纸上记下你所有的 [VPN 登录信息](#获取-vpn-登录信息)。然后删除 Docker 容器： `docker rm -f ipsec-vpn-server`。最后按照 [如何使用本镜像](#如何使用本镜像) 的说明来重新创建它。
 
 ## 配置并使用 IKEv2 VPN
 
@@ -215,18 +235,18 @@ docker logs ipsec-vpn-server
 
 **注：** 如果你无法找到 IKEv2 配置信息，IKEv2 可能没有在容器中启用。尝试按照 [更新 Docker 镜像](#更新-docker-镜像) 一节的说明更新 Docker 镜像和容器。
 
-在 IKEv2 安装过程中会创建一个新的 IKEv2 客户端（默认名称为 `vpnclient`），并且导出它的配置到 **容器内** 的 `/etc/ipsec.d` 目录下。如果要将客户端配置文件从容器复制到 Docker 主机当前目录：
+在 IKEv2 安装过程中会创建一个 IKEv2 客户端（默认名称为 `vpnclient`），并且导出它的配置到 **容器内** 的 `/etc/ipsec.d` 目录下。你可以将配置文件复制到 Docker 主机：
 
 ```bash
 # 查看容器内的 /etc/ipsec.d 目录的文件
 docker exec -it ipsec-vpn-server ls -l /etc/ipsec.d
-# 示例：将一个客户端配置文件从容器复制到 Docker 主机
+# 示例：将一个客户端配置文件从容器复制到 Docker 主机当前目录
 docker cp ipsec-vpn-server:/etc/ipsec.d/vpnclient.p12 ./
 ```
 
 然后你可以使用上面获取的 IKEv2 配置信息来 [配置 IKEv2 VPN 客户端](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#配置-ikev2-vpn-客户端)。
 
-要管理 IKEv2 客户端，你可以使用 [辅助脚本](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#使用辅助脚本)。示例如下。如果需要自定义客户端选项，可以在不添加参数的情况下运行脚本。
+要管理 IKEv2 客户端，你可以使用 [辅助脚本](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto-zh.md#使用辅助脚本)。示例如下。如需自定义客户端选项，可以在不添加参数的情况下运行脚本。
 
 ```bash
 # 添加一个客户端（使用默认选项）
@@ -237,8 +257,6 @@ docker exec -it ipsec-vpn-server ikev2.sh --exportclient [client name]
 docker exec -it ipsec-vpn-server ikev2.sh --listclients
 # 显示使用信息
 docker exec -it ipsec-vpn-server ikev2.sh -h
-# 不添加参数运行脚本
-docker exec -it ipsec-vpn-server ikev2.sh
 ```
 
 **注：** 如果你遇到错误 "executable file not found"，将上面的 `ikev2.sh` 换成 `/opt/src/ikev2.sh`。
@@ -249,6 +267,7 @@ docker exec -it ipsec-vpn-server ikev2.sh
 
 - [使用其他的 DNS 服务器](#使用其他的-dns-服务器)
 - [不启用 privileged 模式运行](#不启用-privileged-模式运行)
+- [选择 VPN 模式](#选择-vpn-模式)
 - [访问 Docker 主机上的其它容器](#访问-docker-主机上的其它容器)
 - [关于 host network 模式](#关于-host-network-模式)
 - [启用 Libreswan 日志](#启用-libreswan-日志)
@@ -317,6 +336,16 @@ docker run \
 
 更多信息请参见 [compose file reference](https://docs.docker.com/compose/compose-file/)。
 
+### 选择 VPN 模式
+
+在使用此 Docker 镜像时，默认启用 IPsec/L2TP 和 IPsec/XAuth ("Cisco IPsec") 模式。此外，如果在创建 Docker 容器时在 `docker run` 命令中[指定](#运行-ipsec-vpn-服务器)了 `-v ikev2-vpn-data:/etc/ipsec.d` 选项，则会启用 IKEv2 模式。
+
+高级用户可以有选择性地禁用 VPN 模式，通过在 `env` 文件中设置以下变量并重新创建 Docker 容器来实现。
+
+禁用 IPsec/L2TP 模式：`VPN_DISABLE_IPSEC_L2TP=yes`   
+禁用 IPsec/XAuth ("Cisco IPsec") 模式：`VPN_DISABLE_IPSEC_XAUTH=yes`   
+禁用 IPsec/L2TP 和 IPsec/XAuth 模式：`VPN_IKEV2_ONLY=yes`
+
 ### 访问 Docker 主机上的其它容器
 
 连接到 VPN 后，VPN 客户端通常可以访问在同一 Docker 主机上其他容器中运行的服务，而无需进行其他配置。
@@ -342,6 +371,14 @@ docker exec -it ipsec-vpn-server env TERM=xterm bash -l
 然后运行以下命令：
 
 ```
+# For Alpine-based image
+apk add --no-cache rsyslog
+rsyslogd
+ipsec whack --shutdown
+ipsec pluto --config /etc/ipsec.conf
+sed -i '/pluto\.pid/a rsyslogd' /opt/src/run.sh
+exit
+# For Debian-based image
 apt-get update && apt-get -y install rsyslog
 service rsyslog restart
 service ipsec restart
@@ -378,13 +415,20 @@ docker exec -it ipsec-vpn-server ipsec trafficstatus
 ```
 git clone https://github.com/hwdsl2/docker-ipsec-vpn-server.git
 cd docker-ipsec-vpn-server
+# To build Alpine-based image
 docker build -t hwdsl2/ipsec-vpn-server .
+# To build Debian-based image
+docker build -f Dockerfile.debian -t hwdsl2/ipsec-vpn-server:debian .
 ```
 
 若不需要改动源码，也可以这样：
 
 ```
+# To build Alpine-based image
 docker build -t hwdsl2/ipsec-vpn-server github.com/hwdsl2/docker-ipsec-vpn-server.git
+# To build Debian-based image
+docker build -f Dockerfile.debian -t hwdsl2/ipsec-vpn-server:debian \
+  github.com/hwdsl2/docker-ipsec-vpn-server.git
 ```
 
 ### 在容器中运行 Bash shell
@@ -398,6 +442,9 @@ docker exec -it ipsec-vpn-server env TERM=xterm bash -l
 （可选步骤） 安装 `nano` 编辑器：
 
 ```
+# For Alpine-based image
+apk add --no-cache nano
+# For Debian-based image
 apt-get update && apt-get -y install nano
 ```
 
@@ -443,6 +490,8 @@ docker run \
 * [IPsec VPN Server on Ubuntu, Debian and CentOS](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md)
 
 ## 授权协议
+
+**注：** 预构建镜像中的软件组件（例如 Libreswan 和 xl2tpd）在其各自版权所有者选择的相应许可下。对于任何预构建的镜像的使用，用户有责任确保对该镜像的任何使用符合其中包含的所有软件的任何相关许可。
 
 版权所有 (C) 2016-2021 [Lin Song](https://github.com/hwdsl2) [![View my profile on LinkedIn](https://static.licdn.com/scds/common/u/img/webpromo/btn_viewmy_160x25.png)](https://www.linkedin.com/in/linsongui)   
 基于 [Thomas Sarlandie 的工作](https://github.com/sarfata/voodooprivacy) (版权所有 2012)
