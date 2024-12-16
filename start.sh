@@ -10,4 +10,4 @@
 #	-d --privileged \
 #	ipsec-vpn-server:latest
 
-docker-compose up -d
+docker compose up -d

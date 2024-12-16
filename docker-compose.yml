@@ -1,5 +1,3 @@
-version: '3'
-
 volumes:
   ikev2-vpn-data:
 
